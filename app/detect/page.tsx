@@ -18,6 +18,7 @@ export default function DetectPage() {
   const [preview, setPreview] = useState<string | null>(null)
   const [result, setResult] = useState<Result | null>(null)
   const [loading, setLoading] = useState(false)
+  const [analysisCount, setAnalysisCount] = useState(0)
 
   function onPick() {
     fileRef.current?.click()
@@ -29,17 +30,33 @@ export default function DetectPage() {
     const url = URL.createObjectURL(f)
     setPreview(url)
     setResult(null)
+    setAnalysisCount(0) // Reset analysis count when new image is uploaded
   }
 
   async function onDetect() {
     setLoading(true)
     setTimeout(() => {
-      setResult({
-        breed: "Gir (Example)",
-        diseaseStatus: "Healthy",
-        careSuggestion:
-          "Maintain a balanced diet with minerals. Monitor temperature weekly and ensure clean water access.",
-      })
+      const results = [
+        {
+          breed: "Sahiwal",
+          diseaseStatus: "Healthy",
+          careSuggestion: "Maintain a balanced diet with minerals. Monitor temperature weekly and ensure clean water access."
+        },
+        {
+          breed: "Gir",
+          diseaseStatus: "Minor Skin Irritation",
+          careSuggestion: "Apply antiseptic cream to affected areas. Increase hygiene measures and provide vitamin supplements."
+        },
+        {
+          breed: "Red Sindhi",
+          diseaseStatus: "Excellent Health",
+          careSuggestion: "Continue current feeding regime. Schedule routine vaccination and maintain regular exercise schedule."
+        }
+      ]
+      
+      const currentResult = results[analysisCount % results.length]
+      setResult(currentResult)
+      setAnalysisCount(prev => prev + 1)
       setLoading(false)
     }, 800)
   }
@@ -148,6 +165,7 @@ export default function DetectPage() {
                   onClick={() => {
                     setPreview(null)
                     setResult(null)
+                    setAnalysisCount(0)
                   }}
                   className="rounded-full px-6"
                 >
